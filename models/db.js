@@ -6,9 +6,11 @@ const db = new sqlite3.Database('./mydb.sqlite', (err) => {
     console.error('Error opening database', err);
   } else {
     console.log('Database opened successfully');
-    // Initialize tables
+    
   }
 });
+
+// Initialize tables
 
 // Create a Users table
 db.run(`
@@ -21,7 +23,7 @@ db.run(`
  )
 `);
 
-// Create a Skills table
+// Create a Skills table - user_id is a foreign key connecting to users.id
 db.run(`
  CREATE TABLE IF NOT EXISTS skills (
    id INTEGER PRIMARY KEY AUTOINCREMENT,

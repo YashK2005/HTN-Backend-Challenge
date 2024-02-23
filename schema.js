@@ -56,7 +56,7 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
-    user: { // User information endpoint
+    user: { // User information endpoint - searches by ID
       type: UserType,
       args: { id: { type: GraphQLInt } },
       resolve(parent, args) {
@@ -68,7 +68,7 @@ const RootQuery = new GraphQLObjectType({
         });
       },
     },
-    users: { // All users endpoint
+    users: { // All users endpoint - returns all users
       type: new GraphQLList(UserType),
       resolve(parent, args) {
         return new Promise((resolve, reject) => {
@@ -79,13 +79,13 @@ const RootQuery = new GraphQLObjectType({
         });
       },
     },
-    skills: { // Skills endpoint
+    skills: { // Skills endpoint - returns skills with their frequency 
       type: new GraphQLList(SkillType),
       args: {
         data: {
           type: new GraphQLInputObjectType({
             name: 'SkillInput',
-            fields: () => ({
+            fields: () => ({ //filter out skills based on frequency
               min_frequency: { type: GraphQLInt, defaultValue: 0 },
               max_frequency: { type: GraphQLInt, defaultValue: Number.MAX_SAFE_INTEGER },
             }),
@@ -130,7 +130,7 @@ const UpdateUserInputType = new GraphQLInputObjectType({
   },
 });
 
-
+//Updating User Data endpoint
 const Mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
@@ -141,7 +141,8 @@ const Mutation = new GraphQLObjectType({
         data: { type: new GraphQLNonNull(UpdateUserInputType) },
       },
       resolve(parent, { id, data }) {
-        let updateFields = [];
+        //stores the fields and values to be updated (not including skills)
+        let updateFields = []; 
         let updateValues = [];
 
         //getting the keys of the data object (not including skills)
@@ -151,11 +152,11 @@ const Mutation = new GraphQLObjectType({
             updateValues.push(data[key]);
           }
         });
-        //updating the user - skills are handled later   
-        updateValues.push(id); // Assuming 'id' is the ID of the user being updated
+        //user basic data - skills are handled later   
+        updateValues.push(id); 
 
         const userUpdatePromise = new Promise((resolve, reject) => {
-          if (updateFields.length > 0) { // Ensure there are fields to update - if we don't run the sql query
+          if (updateFields.length > 0) { // Ensure there are fields to update - if there aren't don't run the sql query or there will be an error
             db.run(`UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`, updateValues, function(err) {
               if (err) reject(err);
               else resolve(id); 
@@ -168,7 +169,7 @@ const Mutation = new GraphQLObjectType({
         let skillPromises = [];
         if (Array.isArray(data.skills)) {
           skillPromises = data.skills.map(skill => {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => { //checking if the user has the skill already
               db.get(`SELECT id FROM skills WHERE user_id = ? AND skill = ?`, [id, skill.skill], (err, row) => {
                 if (err) {
                   reject(err);

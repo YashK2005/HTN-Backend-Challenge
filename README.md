@@ -1,6 +1,6 @@
 # Yash Kothari - Hack the North Backend Challenge 2024
 
-This was a pretty fun assignment, it was quite challenging for me though as it was my first time using both GraphQL and Express. This was also my first pure backend project, but so far it seems a lot more fun than front-end work!
+This was a pretty fun assignment, it was quite challenging for me though as it was my first time using both GraphQL and Express, but YouTube tutorials came in clutch. This was also my first pure backend project, but so far it seems a lot more fun than front-end work!
 I used Node.js/Express with GraphQL and a SQLite database.
 
 
