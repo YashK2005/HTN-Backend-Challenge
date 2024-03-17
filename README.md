@@ -25,9 +25,6 @@ db.js: defines and creates the tables for the sqlite db
 
 I implemented the All Users Endpoint, User Endpoint, Updating User Data Endpoint, and Skills Endpoint (with optional min/max frequency parameters).
 
-The most challenging part of this for me was setting up schema.js, everything was 100% new. 
-Spefically, the Updating User Data Endpoint was really tricky for me, it took me a while to figure out why I got errors when I only updated skills or when I only updated non-skill data.
-
 To run/test this:
 
 Run ```node index.js``` and open http://localhost:3000/graphql
